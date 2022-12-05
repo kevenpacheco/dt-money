@@ -11,7 +11,7 @@ export const Overlay = styled(Dialog.Overlay)`
 `
 
 export const Content = styled(Dialog.Content)`
-  min-width: 32rem;
+  width: min(32rem, 100%);
   border-radius: 6px;
   padding: 2.5rem 3rem;
   background: ${(props) => props.theme['gray-800']};
@@ -66,7 +66,7 @@ export const Content = styled(Dialog.Content)`
 
 export const TransactionType = styled(RadioGroup.Root)`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
   margin-top: 0.5rem;
 `

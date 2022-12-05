@@ -4,6 +4,10 @@ export const SearchFormContainer = styled.form`
   display: flex;
   gap: 1rem;
 
+  @media (max-width: 415px) {
+    flex-direction: column;
+  }
+
   input {
     flex: 1;
     border-radius: 6px;
@@ -20,6 +24,7 @@ export const SearchFormContainer = styled.form`
   button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.75rem;
 
     border: 0;
