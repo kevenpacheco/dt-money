@@ -1,6 +1,5 @@
 import { CaretLeft, CaretRight } from 'phosphor-react'
-import { useContextSelector } from 'use-context-selector'
-import { TransactionsContext } from '../../../../contexts/TransactionsContext'
+import { useMemo } from 'react'
 import {
   PaginationContainer,
   PaginationNavigateButton,
@@ -9,6 +8,8 @@ import {
 
 interface PaginationProps {
   currentPage: number
+  totalItems: number
+  totalItemsPerPage: number
   onPrevPage: () => void
   onNextPage: () => void
   onSetPage: (page: number) => void
@@ -16,21 +17,19 @@ interface PaginationProps {
 
 export function Pagination({
   currentPage,
+  totalItems,
+  totalItemsPerPage,
   onNextPage,
   onPrevPage,
   onSetPage,
 }: PaginationProps) {
-  const transactionsPageCount = useContextSelector(
-    TransactionsContext,
-    (context) => {
-      return Math.ceil(context.transactions.length / 1)
-    },
-  )
+  const totalTransactions = totalItems
 
-  const isLastPage = currentPage === transactionsPageCount
+  const totalPages = Math.ceil(totalTransactions / totalItemsPerPage) || 1
+  const isLastPage = currentPage === totalPages
   const isFirstPage = currentPage === 1
 
-  function renderPageButtons() {
+  const pageButtons = useMemo(() => {
     const pages = []
     const maxPageButtons = 4
     const interval = maxPageButtons / 2
@@ -39,35 +38,23 @@ export function Pagination({
       interval - currentPage >= 0 ? interval - currentPage : 0
 
     const numberOfPageButtonsToAddOnTheLeft =
-      currentPage + interval - transactionsPageCount >= 0
-        ? currentPage + interval - transactionsPageCount
+      currentPage + interval - totalPages >= 0
+        ? currentPage + interval - totalPages
         : 0
 
-    for (
-      let numberPage = 1;
-      numberPage <= transactionsPageCount;
-      numberPage++
-    ) {
+    for (let numberPage = 1; numberPage <= totalPages; numberPage++) {
       const isVisible =
         numberPage <=
           currentPage + interval + numberOfPageButtonsToAddOnTheRight &&
         numberPage > currentPage - interval - numberOfPageButtonsToAddOnTheLeft
 
       if (isVisible) {
-        pages.push(
-          <PaginationPageButton
-            key={numberPage}
-            isActive={numberPage === currentPage}
-            onClick={() => onSetPage(numberPage)}
-          >
-            {numberPage}
-          </PaginationPageButton>,
-        )
+        pages.push(numberPage)
       }
     }
 
     return pages
-  }
+  }, [currentPage, totalPages])
 
   return (
     <PaginationContainer>
@@ -75,7 +62,17 @@ export function Pagination({
         <CaretLeft weight="bold" size={24} />
       </PaginationNavigateButton>
 
-      <div>{renderPageButtons()}</div>
+      <div>
+        {pageButtons.map((page) => (
+          <PaginationPageButton
+            key={page}
+            isActive={page === currentPage}
+            onClick={() => onSetPage(page)}
+          >
+            {page}
+          </PaginationPageButton>
+        ))}
+      </div>
 
       <PaginationNavigateButton disabled={isLastPage} onClick={onNextPage}>
         <CaretRight weight="bold" size={24} />

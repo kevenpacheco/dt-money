@@ -14,6 +14,7 @@ import {
 
 export function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [totalTransactions, setTotalTransactions] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
 
   function handleNextPage() {
@@ -39,6 +40,7 @@ export function Transactions() {
       })
 
       setTransactions(response.data)
+      setTotalTransactions(Number(response.headers?.['X-Total-Count'] || 0))
     },
     [currentPage],
   )
@@ -81,6 +83,8 @@ export function Transactions() {
 
         <Pagination
           currentPage={currentPage}
+          totalItems={totalTransactions}
+          totalItemsPerPage={transactions.length}
           onNextPage={handleNextPage}
           onPrevPage={handlePrevPage}
           onSetPage={handleSetPage}
