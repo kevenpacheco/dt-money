@@ -33,7 +33,7 @@ export function Transactions() {
       const response = await api.get('/transactions', {
         params: {
           _page: currentPage,
-          _limit: 1,
+          _limit: 10,
           q: query,
         },
       })
