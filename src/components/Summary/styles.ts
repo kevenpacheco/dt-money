@@ -5,8 +5,6 @@ export const SummaryContainer = styled.section`
   grid-template-columns: repeat(3, minmax(280px, 1fr));
   gap: 2rem;
 
-  margin-top: -5rem;
-
   overflow-x: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
