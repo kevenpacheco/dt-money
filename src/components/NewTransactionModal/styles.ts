@@ -62,11 +62,22 @@ export const Content = styled(Dialog.Content)`
       }
     }
   }
+
+  @media (max-width: 520px) {
+    top: initial;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    transform: translate(0, 0);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 `
 
 export const TransactionType = styled(RadioGroup.Root)`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 0.5rem;
 `
@@ -78,6 +89,7 @@ interface TransactionTypeButtonProps {
 export const TransactionTypeButton = styled(
   RadioGroup.Item,
 )<TransactionTypeButtonProps>`
+  flex: 1;
   background: ${(props) => props.theme['gray-700']};
   padding: 1rem;
   display: flex;
