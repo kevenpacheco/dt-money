@@ -32,30 +32,28 @@ export function Pagination({
 
   function renderPageButtons() {
     const pages = []
-    const maxPageButtons = 5
-    const interval = Math.floor(maxPageButtons / 2)
+    const maxPageButtons = 4
+    const interval = maxPageButtons / 2
+
+    const numberOfPageButtonsToAddOnTheRight =
+      interval - currentPage >= 0 ? interval - currentPage : 0
+
+    const numberOfPageButtonsToAddOnTheLeft =
+      currentPage + interval - transactionsPageCount >= 0
+        ? currentPage + interval - transactionsPageCount
+        : 0
 
     for (
       let numberPage = 1;
       numberPage <= transactionsPageCount;
       numberPage++
     ) {
-      const numberOfPageButtonsToAddOnTheRight =
-        interval - currentPage + 1 >= 0 ? interval - currentPage + 1 : 0
-
-      const numberOfPageButtonsToAddOnTheLeft =
-        currentPage + interval - transactionsPageCount >= 0
-          ? currentPage + interval - transactionsPageCount
-          : 0
-
-      const v1 =
+      const isVisible =
         numberPage <=
           currentPage + interval + numberOfPageButtonsToAddOnTheRight &&
-        numberPage >= currentPage - interval - numberOfPageButtonsToAddOnTheLeft
+        numberPage > currentPage - interval - numberOfPageButtonsToAddOnTheLeft
 
-      const isValid = v1
-
-      if (isValid) {
+      if (isVisible) {
         pages.push(
           <PaginationPageButton
             key={numberPage}
