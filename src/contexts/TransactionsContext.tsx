@@ -1,15 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { createContext } from 'use-context-selector'
+import { Transaction } from '../@types/Transaction'
 import { api } from '../lib/axios'
-
-interface Transaction {
-  id: number
-  description: string
-  type: 'income' | 'outcome'
-  price: number
-  category: string
-  createdAt: string
-}
 
 interface CreateTransactionInput {
   description: string
@@ -36,8 +28,6 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const fetchTransactions = useCallback(async (query?: string) => {
     const response = await api.get('/transactions', {
       params: {
-        _sort: 'createdAt',
-        _order: 'desc',
         q: query,
       },
     })

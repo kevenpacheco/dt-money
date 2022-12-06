@@ -1,8 +1,10 @@
-import { useContextSelector } from 'use-context-selector'
+import { useCallback, useEffect, useState } from 'react'
+import { Transaction } from '../../@types/Transaction'
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
-import { TransactionsContext } from '../../contexts/TransactionsContext'
+import { api } from '../../lib/axios'
 import { dateFormatter, priceFormatter } from '../../utils/formatter'
+import { Pagination } from './components/Pagination'
 import { SearchForm } from './components/SearchForm'
 import {
   PriceHighlight,
@@ -11,9 +13,39 @@ import {
 } from './styles'
 
 export function Transactions() {
-  const transactions = useContextSelector(TransactionsContext, (context) => {
-    return context.transactions
-  })
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+
+  function handleNextPage() {
+    setCurrentPage((prevState) => prevState + 1)
+  }
+
+  function handlePrevPage() {
+    setCurrentPage((prevState) => prevState - 1)
+  }
+
+  function handleSetPage(page: number) {
+    setCurrentPage(page)
+  }
+
+  const fetchTransactions = useCallback(
+    async (query?: string) => {
+      const response = await api.get('/transactions', {
+        params: {
+          _page: currentPage,
+          _limit: 1,
+          q: query,
+        },
+      })
+
+      setTransactions(response.data)
+    },
+    [currentPage],
+  )
+
+  useEffect(() => {
+    fetchTransactions()
+  }, [fetchTransactions])
 
   return (
     <div>
@@ -46,6 +78,13 @@ export function Transactions() {
             </tbody>
           </TransactionsTable>
         </div>
+
+        <Pagination
+          currentPage={currentPage}
+          onNextPage={handleNextPage}
+          onPrevPage={handlePrevPage}
+          onSetPage={handleSetPage}
+        />
       </TransactionsContainer>
     </div>
   )

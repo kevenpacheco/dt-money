@@ -31,6 +31,30 @@
       "type": "outcome",
       "createdAt": "2022-12-05T16:23:10.383Z",
       "id": 4
+    },
+    {
+      "category": "Casa",
+      "description": "Aluguel do apartamento",
+      "price": 1200,
+      "type": "outcome",
+      "createdAt": "2022-12-05T18:58:49.464Z",
+      "id": 5
+    },
+    {
+      "category": "Venda",
+      "description": "Computador",
+      "price": 5400,
+      "type": "income",
+      "createdAt": "2022-12-05T18:59:04.163Z",
+      "id": 6
+    },
+    {
+      "category": "Casa",
+      "description": "teste",
+      "price": 24,
+      "type": "outcome",
+      "createdAt": "2022-12-06T02:59:54.162Z",
+      "id": 7
     }
   ]
 }
