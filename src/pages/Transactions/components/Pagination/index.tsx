@@ -23,9 +23,7 @@ export function Pagination({
   onPrevPage,
   onSetPage,
 }: PaginationProps) {
-  const totalTransactions = totalItems
-
-  const totalPages = Math.ceil(totalTransactions / totalItemsPerPage) || 1
+  const totalPages = Math.ceil(totalItems / totalItemsPerPage) || 1
   const isLastPage = currentPage === totalPages
   const isFirstPage = currentPage === 1
 
