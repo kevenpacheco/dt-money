@@ -52,11 +52,12 @@ export function Transactions() {
   }, [fetchTransactions])
 
   return (
-    <div>
+    <>
       <Header />
-      <Summary />
 
       <TransactionsContainer>
+        <Summary />
+
         <SearchForm />
 
         <div style={{ overflowX: 'auto' }}>
@@ -92,6 +93,6 @@ export function Transactions() {
           onSetPage={handleSetPage}
         />
       </TransactionsContainer>
-    </div>
+    </>
   )
 }

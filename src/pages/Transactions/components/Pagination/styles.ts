@@ -5,7 +5,7 @@ export const PaginationContainer = styled.div`
   align-items: center;
   gap: 1rem;
   justify-content: center;
-  margin: 2.5rem 0;
+  margin-top: 2.5rem;
 
   button {
     display: grid;
