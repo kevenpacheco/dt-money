@@ -40,7 +40,7 @@ export function Transactions() {
       })
 
       setTransactions(response.data)
-      setTotalTransactions(Number(response.headers?.['X-Total-Count'] || 0))
+      setTotalTransactions(Number(response.headers?.['x-total-count'] || 0))
     },
     [currentPage],
   )
