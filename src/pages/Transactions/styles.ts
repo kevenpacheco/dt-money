@@ -34,6 +34,7 @@ interface PriceHighlightProps {
 }
 
 export const PriceHighlight = styled.span<PriceHighlightProps>`
+  white-space: nowrap;
   color: ${(props) =>
     props.variant === 'income'
       ? props.theme['green-300']
