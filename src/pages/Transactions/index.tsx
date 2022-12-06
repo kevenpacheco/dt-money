@@ -17,6 +17,8 @@ export function Transactions() {
   const [totalTransactions, setTotalTransactions] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
 
+  const maxTransactionsPerPage = 7
+
   function handleNextPage() {
     setCurrentPage((prevState) => prevState + 1)
   }
@@ -34,7 +36,7 @@ export function Transactions() {
       const response = await api.get('/transactions', {
         params: {
           _page: currentPage,
-          _limit: 10,
+          _limit: maxTransactionsPerPage,
           q: query,
         },
       })
@@ -84,7 +86,7 @@ export function Transactions() {
         <Pagination
           currentPage={currentPage}
           totalItems={totalTransactions}
-          totalItemsPerPage={transactions.length}
+          totalItemsPerPage={maxTransactionsPerPage}
           onNextPage={handleNextPage}
           onPrevPage={handlePrevPage}
           onSetPage={handleSetPage}
