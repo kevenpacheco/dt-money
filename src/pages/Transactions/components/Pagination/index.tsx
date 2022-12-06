@@ -58,6 +58,7 @@ export function Pagination({
       if (isValid) {
         pages.push(
           <PaginationPageButton
+            key={numberPage}
             isActive={numberPage === currentPage}
             onClick={() => onSetPage(numberPage)}
           >
