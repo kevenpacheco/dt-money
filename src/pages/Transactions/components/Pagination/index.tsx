@@ -54,6 +54,8 @@ export function Pagination({
     return pages
   }, [currentPage, totalPages])
 
+  if (pageButtons.length <= 1) return null
+
   return (
     <PaginationContainer>
       <PaginationNavigateButton disabled={isFirstPage} onClick={onPrevPage}>
