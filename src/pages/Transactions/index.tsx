@@ -4,6 +4,7 @@ import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
 import { api } from '../../lib/axios'
 import { dateFormatter, priceFormatter } from '../../utils/formatter'
+import { DateFilterButton } from './components/DateFilterButton'
 import { Pagination } from './components/Pagination'
 import { SearchForm } from './components/SearchForm'
 import {
@@ -12,10 +13,22 @@ import {
   TransactionsTable,
 } from './styles'
 
+interface FiltersType {
+  initialDate: Date
+  finalDate: Date
+}
+
 export function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [totalTransactions, setTotalTransactions] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
+
+  const todayFullYear = new Date().getFullYear()
+  const todayMonth = new Date().getMonth()
+  const [filters, setFilters] = useState<FiltersType>({
+    initialDate: new Date(todayFullYear, todayMonth, 1),
+    finalDate: new Date(todayFullYear, todayMonth + 1, 0),
+  })
 
   const maxTransactionsPerPage = 7
 
@@ -31,6 +44,17 @@ export function Transactions() {
     setCurrentPage(page)
   }
 
+  function handleSelectNewDate(newDate: Date) {
+    const newFullYear = newDate.getFullYear()
+    const newMonth = newDate.getMonth()
+
+    setFilters((prevState) => ({
+      ...prevState,
+      initialDate: new Date(newFullYear, newMonth, 1),
+      finalDate: new Date(newFullYear, newMonth + 1, 0),
+    }))
+  }
+
   const fetchTransactions = useCallback(
     async (query?: string) => {
       const response = await api.get('/transactions', {
@@ -38,13 +62,15 @@ export function Transactions() {
           _page: currentPage,
           _limit: maxTransactionsPerPage,
           q: query,
+          createdAt_gte: filters.initialDate,
+          createdAt_lte: filters.finalDate,
         },
       })
 
       setTransactions(response.data)
       setTotalTransactions(Number(response.headers?.['x-total-count'] || 0))
     },
-    [currentPage],
+    [currentPage, filters.finalDate, filters.initialDate],
   )
 
   useEffect(() => {
@@ -56,6 +82,11 @@ export function Transactions() {
       <Header />
 
       <TransactionsContainer>
+        <DateFilterButton
+          currentDate={filters.initialDate}
+          onSelectDate={handleSelectNewDate}
+        />
+
         <Summary />
 
         <SearchForm />
