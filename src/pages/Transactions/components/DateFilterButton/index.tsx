@@ -67,7 +67,7 @@ export function DateFilterButton({
               <CaretLeft weight="bold" size={24} />
             </S.ArrowButton>
 
-            <button type="button">{newYear}</button>
+            <span>{newYear}</span>
 
             <S.ArrowButton type="button" onClick={nextYear}>
               <CaretRight weight="bold" size={24} />

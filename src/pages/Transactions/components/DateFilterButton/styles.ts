@@ -75,20 +75,10 @@ export const OptionsHeader = styled.header`
   align-items: stretch;
   justify-content: space-between;
 
-  button:nth-child(2) {
-    border: 0;
-    padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    background: transparent;
+  span {
     color: ${({ theme }) => theme['gray-300']};
     display: grid;
     place-items: center;
-
-    &:hover {
-      background: ${({ theme }) => theme['gray-600']};
-      transition: background-color 0.2s;
-    }
   }
 `
 
