@@ -87,7 +87,7 @@ export function Transactions() {
           onSelectDate={handleSelectNewDate}
         />
 
-        <Summary />
+        <Summary transactions={transactions} />
 
         <SearchForm />
 
