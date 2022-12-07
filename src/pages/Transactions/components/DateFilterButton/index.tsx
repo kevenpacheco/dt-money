@@ -57,7 +57,7 @@ export function DateFilterButton({
       </S.Trigger>
 
       <Popover.Portal>
-        <S.OptionsContainer align="start">
+        <S.OptionsContainer align="start" sideOffset={8}>
           <S.OptionsCloseButton>
             <X weight="bold" />
           </S.OptionsCloseButton>
