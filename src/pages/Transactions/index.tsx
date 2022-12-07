@@ -89,7 +89,7 @@ export function Transactions() {
 
         <Summary transactions={transactions} />
 
-        <SearchForm />
+        <SearchForm onSearch={fetchTransactions} />
 
         <div style={{ overflowX: 'auto' }}>
           <TransactionsTable>
