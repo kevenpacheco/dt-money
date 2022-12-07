@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Transaction } from '../../@types/Transaction'
+import { useContextSelector } from 'use-context-selector'
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
-import { api } from '../../lib/axios'
+import { TransactionsContext } from '../../contexts/TransactionsContext'
 import { dateFormatter, priceFormatter } from '../../utils/formatter'
 import { DateFilterButton } from './components/DateFilterButton'
 import { Pagination } from './components/Pagination'
@@ -13,69 +12,28 @@ import {
   TransactionsTable,
 } from './styles'
 
-interface FiltersType {
-  initialDate: Date
-  finalDate: Date
-}
-
 export function Transactions() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [totalTransactions, setTotalTransactions] = useState(0)
-  const [currentPage, setCurrentPage] = useState(1)
+  const dataContext = useContextSelector(TransactionsContext, (context) => ({
+    transactions: context.transactions,
+    transactionsCount: context.transactionsCount,
+    filters: context.filters,
+    selectNewDate: context.selectNewDate,
+    fetchTransactions: context.fetchTransactions,
+    nextPage: context.nextPage,
+    prevPage: context.prevPage,
+    selectPage: context.selectPage,
+  }))
 
-  const todayFullYear = new Date().getFullYear()
-  const todayMonth = new Date().getMonth()
-  const [filters, setFilters] = useState<FiltersType>({
-    initialDate: new Date(todayFullYear, todayMonth, 1),
-    finalDate: new Date(todayFullYear, todayMonth + 1, 0),
-  })
-
-  const maxTransactionsPerPage = 7
-
-  function handleNextPage() {
-    setCurrentPage((prevState) => prevState + 1)
-  }
-
-  function handlePrevPage() {
-    setCurrentPage((prevState) => prevState - 1)
-  }
-
-  function handleSetPage(page: number) {
-    setCurrentPage(page)
-  }
-
-  function handleSelectNewDate(newDate: Date) {
-    const newFullYear = newDate.getFullYear()
-    const newMonth = newDate.getMonth()
-
-    setFilters((prevState) => ({
-      ...prevState,
-      initialDate: new Date(newFullYear, newMonth, 1),
-      finalDate: new Date(newFullYear, newMonth + 1, 0),
-    }))
-  }
-
-  const fetchTransactions = useCallback(
-    async (query?: string) => {
-      const response = await api.get('/transactions', {
-        params: {
-          _page: currentPage,
-          _limit: maxTransactionsPerPage,
-          q: query,
-          createdAt_gte: filters.initialDate,
-          createdAt_lte: filters.finalDate,
-        },
-      })
-
-      setTransactions(response.data)
-      setTotalTransactions(Number(response.headers?.['x-total-count'] || 0))
-    },
-    [currentPage, filters.finalDate, filters.initialDate],
-  )
-
-  useEffect(() => {
-    fetchTransactions()
-  }, [fetchTransactions])
+  const {
+    transactions,
+    transactionsCount,
+    filters,
+    selectNewDate,
+    fetchTransactions,
+    nextPage,
+    prevPage,
+    selectPage,
+  } = dataContext
 
   return (
     <>
@@ -84,10 +42,10 @@ export function Transactions() {
       <TransactionsContainer>
         <DateFilterButton
           currentDate={filters.initialDate}
-          onSelectDate={handleSelectNewDate}
+          onSelectDate={selectNewDate}
         />
 
-        <Summary transactions={transactions} />
+        <Summary />
 
         <SearchForm onSearch={fetchTransactions} />
 
@@ -116,12 +74,12 @@ export function Transactions() {
         </div>
 
         <Pagination
-          currentPage={currentPage}
-          totalItems={totalTransactions}
-          totalItemsPerPage={maxTransactionsPerPage}
-          onNextPage={handleNextPage}
-          onPrevPage={handlePrevPage}
-          onSetPage={handleSetPage}
+          currentPage={filters.page}
+          totalItems={transactionsCount}
+          totalItemsPerPage={filters.limitPerPage}
+          onNextPage={nextPage}
+          onPrevPage={prevPage}
+          onSetPage={selectPage}
         />
       </TransactionsContainer>
     </>
