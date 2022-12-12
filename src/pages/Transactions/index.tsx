@@ -6,6 +6,7 @@ import { DateFilterButton } from './components/DateFilterButton'
 import { Pagination } from './components/Pagination'
 import { SearchForm } from './components/SearchForm'
 import { TransactionCard } from './components/TransactionCard'
+import { TransactionCardLoading } from './components/TransactionCard/TransactionCardLoading'
 import { TransactionsContainer, TransactionsTable } from './styles'
 
 export function Transactions() {
@@ -13,6 +14,7 @@ export function Transactions() {
     transactions: context.transactions,
     transactionsCount: context.transactionsCount,
     filters: context.filters,
+    isCreateingNewTransaction: context.isCreateingNewTransaction,
     selectNewDate: context.selectNewDate,
     fetchTransactions: context.fetchTransactions,
     nextPage: context.nextPage,
@@ -24,6 +26,7 @@ export function Transactions() {
     transactions,
     transactionsCount,
     filters,
+    isCreateingNewTransaction,
     selectNewDate,
     fetchTransactions,
     nextPage,
@@ -48,6 +51,7 @@ export function Transactions() {
         <div style={{ overflowX: 'auto' }}>
           <TransactionsTable>
             <tbody>
+              {isCreateingNewTransaction && <TransactionCardLoading />}
               {transactions.map((transaction) => {
                 return (
                   <TransactionCard key={transaction.id} data={transaction} />

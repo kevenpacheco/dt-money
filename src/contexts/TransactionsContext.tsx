@@ -20,6 +20,7 @@ interface TransactionsContextType {
   transactions: Transaction[]
   transactionsCount: number
   filters: FiltersType
+  isCreateingNewTransaction: boolean
   fetchTransactions: (query?: string) => Promise<void>
   createTransaction: (data: CreateTransactionInput) => Promise<void>
   nextPage: () => void
@@ -46,6 +47,9 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     initialDate: new Date(todayFullYear, todayMonth, 1),
     finalDate: new Date(todayFullYear, todayMonth + 1, 0),
   })
+
+  const [isCreateingNewTransaction, setIsCreateingNewTransaction] =
+    useState(false)
 
   function nextPage() {
     setFilters((prevState) => ({ ...prevState, page: prevState.page + 1 }))
@@ -92,17 +96,24 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   const createTransaction = useCallback(
     async (data: CreateTransactionInput) => {
-      const { category, description, price, type } = data
+      setIsCreateingNewTransaction(true)
 
-      const response = await api.post('/transactions', {
-        category,
-        description,
-        price,
-        type,
-        createdAt: new Date(),
-      })
+      try {
+        const { category, description, price, type } = data
 
-      setTransactions((prevState) => [response.data, ...prevState])
+        const response = await api.post('/transactions', {
+          category,
+          description,
+          price,
+          type,
+          createdAt: new Date(),
+        })
+
+        setTransactions((prevState) => [response.data, ...prevState])
+      } catch (error) {
+      } finally {
+        setIsCreateingNewTransaction(false)
+      }
     },
     [],
   )
@@ -117,6 +128,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         transactions,
         filters,
         transactionsCount,
+        isCreateingNewTransaction,
         fetchTransactions,
         createTransaction,
         nextPage,
