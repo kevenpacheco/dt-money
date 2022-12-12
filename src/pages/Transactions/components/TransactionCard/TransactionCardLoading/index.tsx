@@ -1,20 +1,20 @@
+import { Loading } from '../../../../../components/Loading'
 import * as SBase from '../styles'
-import * as S from './styles'
 
 export function TransactionCardLoading() {
   return (
     <SBase.TransactionCardContainer>
       <td width="50%">
-        <S.Loading />
+        <Loading />
       </td>
       <td>
-        <S.Loading />
+        <Loading />
       </td>
       <td>
-        <S.Loading />
+        <Loading />
       </td>
       <td>
-        <S.Loading />
+        <Loading />
       </td>
     </SBase.TransactionCardContainer>
   )

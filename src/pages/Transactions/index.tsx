@@ -1,5 +1,6 @@
 import { useContextSelector } from 'use-context-selector'
 import { Header } from '../../components/Header'
+import { Loading } from '../../components/Loading'
 import { Summary } from '../../components/Summary'
 import { TransactionsContext } from '../../contexts/TransactionsContext'
 import { DateFilterButton } from './components/DateFilterButton'
@@ -15,6 +16,7 @@ export function Transactions() {
     transactionsCount: context.transactionsCount,
     filters: context.filters,
     isCreateingNewTransaction: context.isCreateingNewTransaction,
+    isLoadingTransactions: context.isLoadingTransactions,
     selectNewDate: context.selectNewDate,
     fetchTransactions: context.fetchTransactions,
     nextPage: context.nextPage,
@@ -27,6 +29,7 @@ export function Transactions() {
     transactionsCount,
     filters,
     isCreateingNewTransaction,
+    isLoadingTransactions,
     selectNewDate,
     fetchTransactions,
     nextPage,
@@ -50,25 +53,31 @@ export function Transactions() {
 
         <div style={{ overflowX: 'auto' }}>
           <TransactionsTable>
-            <tbody>
-              {isCreateingNewTransaction && <TransactionCardLoading />}
-              {transactions.map((transaction) => {
-                return (
-                  <TransactionCard key={transaction.id} data={transaction} />
-                )
-              })}
-            </tbody>
+            {isLoadingTransactions ? (
+              <Loading position="center" />
+            ) : (
+              <tbody>
+                {isCreateingNewTransaction && <TransactionCardLoading />}
+                {transactions.map((transaction) => {
+                  return (
+                    <TransactionCard key={transaction.id} data={transaction} />
+                  )
+                })}
+              </tbody>
+            )}
           </TransactionsTable>
         </div>
 
-        <Pagination
-          currentPage={filters.page}
-          totalItems={transactionsCount}
-          totalItemsPerPage={filters.limitPerPage}
-          onNextPage={nextPage}
-          onPrevPage={prevPage}
-          onSetPage={selectPage}
-        />
+        {!isLoadingTransactions && (
+          <Pagination
+            currentPage={filters.page}
+            totalItems={transactionsCount}
+            totalItemsPerPage={filters.limitPerPage}
+            onNextPage={nextPage}
+            onPrevPage={prevPage}
+            onSetPage={selectPage}
+          />
+        )}
       </TransactionsContainer>
     </>
   )

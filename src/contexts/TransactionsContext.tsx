@@ -21,6 +21,7 @@ interface TransactionsContextType {
   transactionsCount: number
   filters: FiltersType
   isCreateingNewTransaction: boolean
+  isLoadingTransactions: boolean
   fetchTransactions: (query?: string) => Promise<void>
   createTransaction: (data: CreateTransactionInput) => Promise<void>
   nextPage: () => void
@@ -38,6 +39,7 @@ export const TransactionsContext = createContext({} as TransactionsContextType)
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsCount, setTransactionsCount] = useState(0)
+  const [isLoadingTransactions, setIsLoadingTransactions] = useState(false)
 
   const todayFullYear = new Date().getFullYear()
   const todayMonth = new Date().getMonth()
@@ -76,20 +78,26 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
   const fetchTransactions = useCallback(
     async (query?: string) => {
-      const { page, limitPerPage, initialDate, finalDate } = filters
+      setIsLoadingTransactions(true)
 
-      const response = await api.get('/transactions', {
-        params: {
-          _page: page,
-          _limit: limitPerPage,
-          q: query,
-          createdAt_gte: initialDate,
-          createdAt_lte: finalDate,
-        },
-      })
+      try {
+        const { page, limitPerPage, initialDate, finalDate } = filters
 
-      setTransactions(response.data)
-      setTransactionsCount(Number(response.headers?.['x-total-count'] || 0))
+        const response = await api.get('/transactions', {
+          params: {
+            _page: page,
+            _limit: limitPerPage,
+            q: query,
+            createdAt_gte: initialDate,
+            createdAt_lte: finalDate,
+          },
+        })
+
+        setTransactions(response.data)
+        setTransactionsCount(Number(response.headers?.['x-total-count'] || 0))
+      } finally {
+        setIsLoadingTransactions(false)
+      }
     },
     [filters],
   )
@@ -129,6 +137,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         filters,
         transactionsCount,
         isCreateingNewTransaction,
+        isLoadingTransactions,
         fetchTransactions,
         createTransaction,
         nextPage,
