@@ -6,7 +6,7 @@ interface LoadingPropsType {
 
 export function Loading({ position = 'left' }: LoadingPropsType) {
   return (
-    <LoadingContainer position={position}>
+    <LoadingContainer data-testid="loading-componet" position={position}>
       <LoadingIndicator />
     </LoadingContainer>
   )
