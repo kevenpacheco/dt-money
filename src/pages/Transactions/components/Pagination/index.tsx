@@ -23,13 +23,13 @@ export function Pagination({
   onPrevPage,
   onSetPage,
 }: PaginationProps) {
-  const totalPages = Math.ceil(totalItems / totalItemsPerPage) || 1
+  const totalPages = Math.ceil(totalItems / totalItemsPerPage)
   const isLastPage = currentPage === totalPages
   const isFirstPage = currentPage === 1
 
   const pageButtons = useMemo(() => {
     const pages = []
-    const maxPageButtons = 4
+    const maxPageButtons = 5
     const interval = maxPageButtons / 2
 
     const numberOfPageButtonsToAddOnTheRight =
@@ -57,7 +57,7 @@ export function Pagination({
   if (pageButtons.length <= 1) return null
 
   return (
-    <PaginationContainer>
+    <PaginationContainer data-testid="pagination-component">
       <PaginationNavigateButton disabled={isFirstPage} onClick={onPrevPage}>
         <CaretLeft weight="bold" size={24} />
       </PaginationNavigateButton>
