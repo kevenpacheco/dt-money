@@ -63,13 +63,21 @@ export function DateFilterButton({
           </S.OptionsCloseButton>
 
           <S.OptionsHeader>
-            <S.ArrowButton type="button" onClick={prevYear}>
+            <S.ArrowButton
+              type="button"
+              onClick={prevYear}
+              data-testid="previous-year-button"
+            >
               <CaretLeft weight="bold" size={24} />
             </S.ArrowButton>
 
             <span>{newYear}</span>
 
-            <S.ArrowButton type="button" onClick={nextYear}>
+            <S.ArrowButton
+              type="button"
+              onClick={nextYear}
+              data-testid="next-year-button"
+            >
               <CaretRight weight="bold" size={24} />
             </S.ArrowButton>
           </S.OptionsHeader>
