@@ -3,7 +3,7 @@ import * as SBase from '../styles'
 
 export function TransactionCardLoading() {
   return (
-    <SBase.TransactionCardContainer>
+    <SBase.TransactionCardContainer data-testid="transaction-card-loading-component">
       <td width="50%">
         <Loading />
       </td>
