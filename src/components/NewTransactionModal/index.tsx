@@ -102,7 +102,7 @@ export function NewTransactionModal({ onClose }: NewTransactionModalProps) {
 
                 <TransactionTypeButton variant="outcome" value="outcome">
                   <ArrowCircleDown size={24} />
-                  Entrada
+                  Saída
                 </TransactionTypeButton>
               </TransactionType>
             )}
