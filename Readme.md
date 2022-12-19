@@ -3,7 +3,6 @@
 ## 📋 Table of contents
 
 - [About](#about)
-- [Demo live](#demo-live)
 - [Step by step to use the application](#step-by-step-to-use-the-application)
 - [Built with](#built-with)
 - [Author](#author)
@@ -18,8 +17,6 @@ DT Money is an ideal finance control system for keeping track of your monthly co
 - Filter the transactions in monthly periods, being able to visualize the sum of the entries, exits and balance of each month.
 
 ![](./src/assets/demo.gif)
-
-## [🎮 DEMO LIVE](https://coffee-delivery-keven.netlify.app/)
 
 ## 🚀 Step by step to use the application
 
