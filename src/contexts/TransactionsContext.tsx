@@ -9,11 +9,6 @@ interface FiltersType {
   initialDate: Date
   finalDate: Date
 }
-interface SummaryType {
-  income: number
-  outcome: number
-  total: number
-}
 interface CreateTransactionInput {
   description: string
   price: number
@@ -23,7 +18,7 @@ interface CreateTransactionInput {
 
 interface TransactionsContextType {
   transactions: Transaction[]
-  currentMonthSummary: SummaryType
+  currentMonthTransactions: Transaction[]
   transactionsCount: number
   filters: FiltersType
   isCreateingNewTransaction: boolean
@@ -43,14 +38,12 @@ interface TransactionsProviderProps {
 export const TransactionsContext = createContext({} as TransactionsContextType)
 
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
+  const [currentMonthTransactions, setCurrentMonthTransactions] = useState<
+    Transaction[]
+  >([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [transactionsCount, setTransactionsCount] = useState(0)
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false)
-  const [currentMonthSummary, setCurrentMonthSummary] = useState<SummaryType>({
-    income: 0,
-    outcome: 0,
-    total: 0,
-  })
 
   const todayFullYear = new Date().getFullYear()
   const todayMonth = new Date().getMonth()
@@ -113,7 +106,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
     [filters],
   )
 
-  const fetchSummaryTransactionsByMonth = useCallback(async () => {
+  const fetchAllTransactionsByMonth = useCallback(async () => {
     setIsLoadingTransactions(true)
 
     try {
@@ -124,27 +117,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         },
       })
 
-      const transactionsByMonth: Transaction[] = response.data
-      const summary = transactionsByMonth.reduce(
-        (acc, transaction) => {
-          if (transaction.type === 'income') {
-            acc.income += transaction.price
-            acc.total += transaction.price
-          } else {
-            acc.outcome += transaction.price
-            acc.total -= transaction.price
-          }
-
-          return acc
-        },
-        {
-          income: 0,
-          outcome: 0,
-          total: 0,
-        },
-      )
-
-      setCurrentMonthSummary(summary)
+      setCurrentMonthTransactions(response.data)
     } finally {
       setIsLoadingTransactions(false)
     }
@@ -157,33 +130,44 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
       try {
         const { category, description, price, type } = data
 
+        const createdAt = new Date()
         const response = await api.post('/transactions', {
           category,
           description,
           price,
           type,
-          createdAt: new Date(),
+          createdAt,
         })
 
-        setTransactions((prevState) => [response.data, ...prevState])
+        if (
+          createdAt >= filters.initialDate &&
+          createdAt <= filters.finalDate
+        ) {
+          setCurrentMonthTransactions((prevState) => [
+            ...prevState,
+            response.data,
+          ])
+        }
+
+        setFilters((prevState) => ({ ...prevState, page: 1 }))
       } catch (error) {
       } finally {
         setIsCreateingNewTransaction(false)
       }
     },
-    [],
+    [filters.initialDate, filters.finalDate],
   )
 
   useEffect(() => {
     fetchTransactions()
-    fetchSummaryTransactionsByMonth()
-  }, [fetchTransactions, fetchSummaryTransactionsByMonth])
+    fetchAllTransactionsByMonth()
+  }, [fetchTransactions, fetchAllTransactionsByMonth])
 
   return (
     <TransactionsContext.Provider
       value={{
         transactions,
-        currentMonthSummary,
+        currentMonthTransactions,
         filters,
         transactionsCount,
         isCreateingNewTransaction,
