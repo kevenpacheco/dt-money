@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useContextSelector } from 'use-context-selector'
 import { describe, it, vi } from 'vitest'
 import { Transaction } from '../@types/Transaction'
+import { api } from '../lib/axios'
 import {
   TransactionsContext,
   TransactionsProvider,
@@ -16,21 +17,12 @@ vi.mock('../lib/axios', () => ({
         'x-total-count': 0,
       },
     }),
-    post: () => ({
-      data: {
-        id: 1,
-        category: 'Alimentação',
-        description: 'Jantar',
-        price: 49,
-        type: 'outcome',
-        createdAt: new Date().toISOString(),
-      },
-    }),
+    post: vi.fn(() => ({ data: [] })),
   },
 }))
 
 describe('Transactions Context', () => {
-  it('should render empty transactions and 0 transactionsCount', () => {
+  it('should render empty transactions and 0 transactionsCount', async () => {
     const Consumer = () => {
       const dataContext = useContextSelector(
         TransactionsContext,
@@ -59,11 +51,15 @@ describe('Transactions Context', () => {
     const transactionsList = screen.getByText(/Transactions list - /i)
     const transactionsCount = screen.getByText(/Transactions count - /i)
 
-    expect(transactionsList).toHaveTextContent('Transactions list - []')
-    expect(transactionsCount).toHaveTextContent('Transactions count - 0')
+    await waitFor(() =>
+      expect(transactionsList).toHaveTextContent('Transactions list - []'),
+    )
+    await waitFor(() =>
+      expect(transactionsCount).toHaveTextContent('Transactions count - 0'),
+    )
   })
 
-  it('should render initial filters', () => {
+  it('should render initial filters', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2022, 11, 2))
 
@@ -101,9 +97,11 @@ describe('Transactions Context', () => {
     expect(initialDate).toHaveTextContent(
       'Filter initial date - 2022-12-01T03:00:00.000Z',
     )
-    expect(finalDate).toHaveTextContent(
-      'Filter final date - 2022-12-31T03:00:00.000Z',
-    )
+    await waitFor(() => {
+      expect(finalDate).toHaveTextContent(
+        'Filter final date - 2022-12-31T03:00:00.000Z',
+      )
+    })
 
     vi.useRealTimers()
   })
@@ -272,13 +270,12 @@ describe('Transactions Context', () => {
   it('should create new transaction', async () => {
     vi.setSystemTime(new Date())
 
-    const fakeNewTransaction: Transaction = {
-      id: 1,
+    const fakeNewTransaction = {
       category: 'Alimentação',
       description: 'Jantar',
       price: 49,
-      type: 'outcome',
-      createdAt: new Date().toISOString(),
+      type: 'outcome' as Transaction['type'],
+      createdAt: new Date(),
     }
 
     const Consumer = () => {
@@ -319,9 +316,7 @@ describe('Transactions Context', () => {
     })
     await user.click(newTransactionButtonElement)
 
-    expect(transactionsElement).toHaveTextContent(
-      `Transactions List - ${JSON.stringify([fakeNewTransaction])}`,
-    )
+    expect(api.post).toHaveBeenCalledWith('/transactions', fakeNewTransaction)
 
     vi.useRealTimers()
   })

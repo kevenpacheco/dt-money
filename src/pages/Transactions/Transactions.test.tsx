@@ -9,11 +9,7 @@ describe('<Transaction />', () => {
     const fakeContextValues = {
       transactions: [],
       transactionsCount: 0,
-      currentMonthSummary: {
-        income: 14000,
-        outcome: 50,
-        total: 13950,
-      },
+      currentMonthTransactions: [],
       filters: {
         page: 1,
         limitPerPage: 1,
@@ -49,11 +45,7 @@ describe('<Transaction />', () => {
     const fakeContextValues = {
       transactions: [],
       transactionsCount: 0,
-      currentMonthSummary: {
-        income: 14000,
-        outcome: 50,
-        total: 13950,
-      },
+      currentMonthTransactions: [],
       filters: {
         page: 1,
         limitPerPage: 1,
@@ -100,11 +92,7 @@ describe('<Transaction />', () => {
     const fakeContextValues = {
       transactions: fakeTransactions,
       transactionsCount: fakeTransactions.length,
-      currentMonthSummary: {
-        income: 14000,
-        outcome: 50,
-        total: 13950,
-      },
+      currentMonthTransactions: fakeTransactions,
       filters: {
         page: 1,
         limitPerPage: 1,
