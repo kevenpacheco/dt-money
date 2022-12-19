@@ -34,6 +34,7 @@ describe('<NewTransactionModal />', () => {
     const fakeContextValues = {
       transactions: [],
       transactionsCount: 0,
+      currentMonthTransactions: [],
       filters: {
         page: 1,
         limitPerPage: 1,
