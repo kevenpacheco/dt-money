@@ -2,59 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Summary } from '.'
 import { TransactionsContext } from '../../contexts/TransactionsContext'
-import { Transaction } from '../../@types/Transaction'
-
-interface FiltersType {
-  page: number
-  limitPerPage: number
-  initialDate: Date
-  finalDate: Date
-}
-interface CreateTransactionInput {
-  description: string
-  price: number
-  category: string
-  type: 'income' | 'outcome'
-}
-
-interface TransactionsContextType {
-  transactions: Transaction[]
-  transactionsCount: number
-  filters: FiltersType
-  isCreateingNewTransaction: boolean
-  isLoadingTransactions: boolean
-  fetchTransactions: (query?: string) => Promise<void>
-  createTransaction: (data: CreateTransactionInput) => Promise<void>
-  nextPage: () => void
-  prevPage: () => void
-  selectPage: (page: number) => void
-  selectNewDate: (newDate: Date) => void
-}
 
 describe('<Summary />', () => {
   it('should render the summary', () => {
-    const fakeTransactions: Transaction[] = [
-      {
-        id: 1,
-        description: 'Desenvolvimento de site',
-        type: 'income',
-        category: 'Venda',
-        price: 14000,
-        createdAt: '2022-12-02T01:38:44.660Z',
-      },
-      {
-        id: 2,
-        description: 'Hamburguer',
-        type: 'outcome',
-        category: 'Alimentação',
-        price: 50,
-        createdAt: '2022-12-02T01:30:44.660Z',
-      },
-    ]
-
-    const fakeContextProviderValues: TransactionsContextType = {
-      transactions: fakeTransactions,
+    const fakeContextProviderValues = {
+      transactions: [],
       transactionsCount: 0,
+      currentMonthSummary: {
+        income: 14000,
+        outcome: 50,
+        total: 13950,
+      },
       filters: {
         page: 1,
         limitPerPage: 1,
